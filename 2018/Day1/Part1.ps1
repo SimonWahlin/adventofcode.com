@@ -9,7 +9,7 @@ function Get-Frequence {
     }
     process {
         foreach($Value in $Change) {
-            if($Value -lt 0) {
+            if($Value -gt 0) {
                 $ValueSign = '+'
             } else {
                 $ValueSign = $null
@@ -23,4 +23,4 @@ function Get-Frequence {
 Get-Frequence -Change +1,+1,+1
 Get-Frequence -Change +1,+1,-2
 Get-Frequence -Change -1,-2,-3
-Get-Content -Path 1.1.txt | Get-Frequence
+Get-Content -Path 1.1.input | Get-Frequence
