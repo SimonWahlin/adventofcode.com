@@ -34,10 +34,13 @@ function Resolve-WirePath {
             else {
                 $Cordinates[$index]++
             }
-            $null = $Path.Add($Cordinates -join ',')
+            if(-Not $Path.Add($Cordinates -join ',')) {
+                # Path is crossing itself, add new uniqe value by appending stepcount $i
+                $null = $Path.Add("$($Cordinates -join ','),$i")
+            }
         }
     }
-    Write-Output -InputObject $Path
+    return $Path
 }
 
 function Compare-WirePath {
@@ -50,9 +53,10 @@ function Compare-WirePath {
         [System.Collections.Generic.HashSet`1[[System.String]]]
         $DifferencePath
     )
-    $NewSet = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList $ReferencePath
-    $NewSet.IntersectWith($DifferencePath)
-    return $NewSet
+    # $NewSet = New-Object -TypeName 'System.Collections.Generic.HashSet[string]' -ArgumentList $ReferencePath
+    $ReferencePath.IntersectWith($DifferencePath)
+    # return $NewSet
+    return $ReferencePath
 }
 
 function Select-ClosestWireIntersection {
@@ -61,7 +65,9 @@ function Select-ClosestWireIntersection {
         [string]
         $ReferencePathDirection,
         [string]
-        $DifferencePathDirection
+        $DifferencePathDirection,
+        [switch]
+        $MinimizeDelay
     )
     $Path1 = Resolve-WirePath -Directions $ReferencePathDirection
     $Path2 = Resolve-WirePath -Directions $DifferencePathDirection
