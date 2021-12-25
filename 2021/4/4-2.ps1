@@ -8,14 +8,16 @@ class BingoBoard {
 
     [bool] Test() {
         for ($x = 0; $x -lt 5; $x++) {
-            [int[]]$Line = $this.Board[$x] | Where-Object { $_ -ge 0 }
+            [int[]]$Line = $this.Board[$x] | 
+                Where-Object { $_ -ge 0 }
             if ($Line.Count -eq 0) {
                 $this.HasWon = $true
                 return $true
             }
 
-            $Col = $this.Board | ForEach-Object -Process { 
-                $_ | Select-Object -Index $x 
+            $Col = $this.Board | 
+                ForEach-Object -Process { 
+                    $_ | Select-Object -Index $x 
             } | Where-Object { $_ -ge 0 }
 
             if ($Col.Count -eq 0) {
@@ -37,7 +39,9 @@ class BingoBoard {
     }
 
     [int] GetPoints() {
-        $Points = $this.Board | Foreach-Object {$_} | Where-Object {$_ -ge 0} | Measure-Object -Sum | Select-Object -ExpandProperty Sum
+        $Points = $this.Board | Foreach-Object {$_} | 
+            Where-Object {$_ -ge 0} | Measure-Object -Sum | 
+            Select-Object -ExpandProperty Sum
         return $Points
     }
 
